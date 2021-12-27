@@ -150,7 +150,13 @@ public class MainWindowController implements EventHandler<KeyEvent> {
     private void createMouse() {
         mouseX = new Random().nextInt(width);
         mouseY = new Random().nextInt(height);
-        mouse = new MouseNode(mouseX, mouseY);
+        for (SnakeNode s : snake) {
+            if (mouseX == s.getPosX() && mouseY == s.getPosY()) {
+                createMouse();
+            } else {
+                mouse = new MouseNode(mouseX, mouseY);
+            }
+        }
     }
 
     private void checkMouse() {
@@ -215,7 +221,6 @@ public class MainWindowController implements EventHandler<KeyEvent> {
         }
     }
 
-
     @Override
     public void handle(KeyEvent KeyEvent) {
         if (KeyEvent.getCode() == KeyCode.UP) {
@@ -254,20 +259,5 @@ public class MainWindowController implements EventHandler<KeyEvent> {
         }
 //        init();
     }
-
-
-//    public void repaint() {
-//        try {
-//            map.getChildren().removeAll(mouse);
-//            map.getChildren().removeAll(snakeNodes);
-//            map.add(mouse, mouse.getPosX(), mouse.getPosY());
-//            for (SnakeNode snakeNode : snakeNodes) {
-//                map.add(snakeNode, snakeNode.getPosX(), snakeNode.getPosY());
-//            }
-//        } catch (IllegalArgumentException exception) {
-//            timeline.stop();
-//            gameOver();
-//        }
-//    }
 
 }
