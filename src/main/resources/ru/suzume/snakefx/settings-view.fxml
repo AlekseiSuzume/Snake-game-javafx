@@ -16,7 +16,7 @@
         <Button fx:id="btnAccept" layoutX="223.0" layoutY="279.0" mnemonicParsing="false" onAction="#okOnClick" text="Accept" />
         <Button fx:id="btnCancel" layoutX="315.0" layoutY="279.0" mnemonicParsing="false" onAction="#cancelOnClick" text="Cancel" />
         <Label layoutX="341.0" layoutY="41.0" text="Начальная длина змейки:" />
-        <Slider fx:id="levelSlider" layoutX="80.0" layoutY="72.0" />
+        <Slider fx:id="difficultSlider" layoutX="80.0" layoutY="72.0" />
         <Slider fx:id="snakeLength" layoutX="342.0" layoutY="72.0" />
     </children>
 </AnchorPane>

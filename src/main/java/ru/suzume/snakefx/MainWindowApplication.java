@@ -20,6 +20,7 @@ public class MainWindowApplication extends Application {
         scene.addEventFilter(KeyEvent.KEY_PRESSED, mwc);
         stage.setTitle("Snake");
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
