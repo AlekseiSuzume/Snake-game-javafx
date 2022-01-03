@@ -34,4 +34,11 @@ public class SnakeNode {
         this.style = style;
     }
 
+    @Override
+    public String toString() {
+        return "SnakeNode{" +
+                "posX=" + posX +
+                ", posY=" + posY +
+                '}';
+    }
 }

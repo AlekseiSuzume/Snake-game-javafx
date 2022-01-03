@@ -1,5 +1,6 @@
 package ru.suzume.snakefx;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
@@ -37,6 +38,10 @@ public class SettingsController {
         btnAccept.getScene().getWindow().hide();
         getBackgroundFill();
         getSnakeFill();
+        MainWindowController.timeline.play();
+    }
+
+    public void cancelOnClick(ActionEvent event) {
     }
 
 

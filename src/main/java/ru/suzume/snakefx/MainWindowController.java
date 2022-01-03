@@ -3,6 +3,7 @@ package ru.suzume.snakefx;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,10 +60,10 @@ public class MainWindowController implements EventHandler<KeyEvent> {
     private int mouseY;
     private boolean gameOver;
     private boolean isAlive;
-    static Move move = Move.RIGHT;
+    static Move move;
     public static Color bgColor = Color.GREEN;
     public static Color snakeColor = Color.LIGHTGREEN;
-    Timeline timeline = new Timeline();
+    public static Timeline timeline = new Timeline();
     List<SnakeNode> snake = new ArrayList<>();
     private int snakeSize = 3;
     MouseNode mouse;
@@ -73,6 +74,7 @@ public class MainWindowController implements EventHandler<KeyEvent> {
     public void initialize() {
         isAlive = true;
         gameOver = false;
+        move = Move.RIGHT;
         speed = 0;
         gc = map.getGraphicsContext2D();
         snake.clear();
@@ -80,21 +82,21 @@ public class MainWindowController implements EventHandler<KeyEvent> {
 //        fill();
         tick();
 
-        btnSettings.setOnAction(event -> {
-            timeline.stop();
-//            btnSettings.getScene().getWindow().hide();
-
-            FXMLLoader fxmlLoader = new FXMLLoader(MainWindowApplication.class.getResource("settings-view.fxml"));
-            Stage stage = new Stage();
-            Scene scene = null;
-            try {
-                scene = new Scene(fxmlLoader.load());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            stage.setScene(scene);
-            stage.show();
-        });
+//        btnSettings.setOnAction(event -> {
+//            timeline.stop();
+////            btnSettings.getScene().getWindow().hide();
+//
+//            FXMLLoader fxmlLoader = new FXMLLoader(MainWindowApplication.class.getResource("settings-view.fxml"));
+//            Stage stage = new Stage();
+//            Scene scene = null;
+//            try {
+//                scene = new Scene(fxmlLoader.load());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            stage.setScene(scene);
+//            stage.show();
+//        });
     }
 
     public void init() {
@@ -131,7 +133,6 @@ public class MainWindowController implements EventHandler<KeyEvent> {
             snake();
             checkMouse();
             checkIntersection();
-            System.out.println(timeline.getRate());
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -144,6 +145,8 @@ public class MainWindowController implements EventHandler<KeyEvent> {
             gc.fillRect(snakeNode.getPosX() * nodeSize, snakeNode.getPosY() * nodeSize, nodeSize - 1, nodeSize - 1);
             gc.setFill(snakeColor);
             gc.fillRect(snakeNode.getPosX() * nodeSize, snakeNode.getPosY() * nodeSize, nodeSize - 2, nodeSize - 2);
+
+            System.out.println(snakeNode.getPosX() + " " + snakeNode.getPosY());
         }
     }
 
@@ -153,10 +156,9 @@ public class MainWindowController implements EventHandler<KeyEvent> {
         for (SnakeNode s : snake) {
             if (mouseX == s.getPosX() && mouseY == s.getPosY()) {
                 createMouse();
-            } else {
-                mouse = new MouseNode(mouseX, mouseY);
             }
         }
+        mouse = new MouseNode(mouseX, mouseY);
     }
 
     private void checkMouse() {
@@ -165,9 +167,8 @@ public class MainWindowController implements EventHandler<KeyEvent> {
             createMouse();
             speed += 0.1;
             timeline.setRate(1 + speed);
-
-            SnakeNode snakeNode = new SnakeNode(snake.get(snake.size() - 1).getPosX() + 1,
-                    snake.get(snake.size() - 1).getPosY() + 1);
+            SnakeNode snakeNode = new SnakeNode(snake.get(snake.size() - 1).getPosX(),
+                    snake.get(snake.size() - 1).getPosY());
             snake.add(snakeNode);
         }
     }
@@ -254,10 +255,22 @@ public class MainWindowController implements EventHandler<KeyEvent> {
 
     @FXML
     private void restart() {
-        if (!isAlive) {
-            initialize();
-        }
-//        init();
+        timeline.stop();
+        initialize();
     }
 
+    @FXML
+    private void settings() {
+        timeline.pause();
+        FXMLLoader fxmlLoader = new FXMLLoader(MainWindowApplication.class.getResource("settings-view.fxml"));
+        Stage stage = new Stage();
+        Scene scene = null;
+        try {
+            scene = new Scene(fxmlLoader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        stage.setScene(scene);
+        stage.show();
+    }
 }

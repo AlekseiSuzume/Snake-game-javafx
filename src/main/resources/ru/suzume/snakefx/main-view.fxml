@@ -31,8 +31,8 @@
                 <Label layoutX="496.0" layoutY="157.0" text="Score:" textAlignment="CENTER" />
                 <Label layoutX="500.0" layoutY="201.0" text="Live:" textAlignment="CENTER" />
                 <Button fx:id="btnExit" layoutX="472.0" layoutY="374.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" text="Exit game" AnchorPane.bottomAnchor="22.0" />
-                <Button fx:id="btnSettings" layoutX="472.0" layoutY="315.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" text="Settings" AnchorPane.bottomAnchor="81.0" />
-                <Button fx:id="restart" layoutX="482.0" layoutY="249.0" mnemonicParsing="false" onAction="#restart" text="Resume" />
+                <Button fx:id="btnSettings" layoutX="472.0" layoutY="315.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="80.0" onAction="#settings" text="Settings" AnchorPane.bottomAnchor="81.0" />
+                <Button fx:id="restart" layoutX="482.0" layoutY="249.0" mnemonicParsing="false" onAction="#restart" text="Restart" />
             <Canvas fx:id="map" height="400.0" width="400.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="10.0" />
             </children>
             <VBox.margin>
