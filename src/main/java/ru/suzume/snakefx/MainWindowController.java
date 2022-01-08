@@ -7,82 +7,129 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
+import javafx.scene.shape.ArcType;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import ru.suzume.snakefx.objects.Level;
+import ru.suzume.snakefx.objects.CactusNode;
 import ru.suzume.snakefx.objects.MouseNode;
 import ru.suzume.snakefx.objects.Move;
 import ru.suzume.snakefx.objects.SnakeNode;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 
 public class MainWindowController implements EventHandler<KeyEvent> {
 
     @FXML
-    private Button btnDown;
+    private Label txtRecord;
+    @FXML
+    private Label txtScore;
+    @FXML
+    private Label txtLive;
+    @FXML
+    private Button btnStart;
+    @FXML
+    private Button btnPause;
     @FXML
     private Button btnExit;
     @FXML
-    private Button btnLeft;
-    @FXML
-    private Button btnRight;
-    @FXML
     private Button btnSettings;
     @FXML
-    private Button btnUp;
+    private Button btnRestart;
     @FXML
     private Canvas map;
     @FXML
-    private MenuBar menuAbout;
+    private MenuBar menuBar;
     @FXML
-    private Menu menuAboutButton;
+    private Menu btnMenu;
     @FXML
-    private Button restart;
+    private MenuItem menuAbout;
+    @FXML
+    private MenuItem menuInfo;
 
-    private int width = 20;
-    private int height = 20;
-    private int nodeSize = 20;
+    private int width = 15;
+    private int height = 15;
+    private int nodeSize = 30;
     private int mouseX;
     private int mouseY;
+    private int cactusX;
+    private int cactusY;
     private boolean gameOver;
     private boolean isAlive;
     static Move move;
-    public static Color bgColor = Color.GREEN;
-    public static Color snakeColor = Color.LIGHTGREEN;
+    public static Color bgColor = Color.rgb(255, 204, 128);
+    public static Color snakeColor = Color.TEAL;
     public static Timeline timeline = new Timeline();
     public static int startSnakeLength = 3;
     public static double difficult = 0;
     private double speed = 0;
     private int snakeSize = 3;
-    List<SnakeNode> snake = new ArrayList<>();
+    private int score;
+    private int tempScore;
+    private int lives = 2;
+    Properties properties;
     MouseNode mouse;
+    CactusNode cactus;
+    List<SnakeNode> snake = new ArrayList<>();
+    List<CactusNode> cactusList = new ArrayList<>();
     GraphicsContext gc;
+    File imageFileMouse;
+    File imageFileCactus;
+    Image mouseImage;
+    Image cactusImage;
 
     @FXML
     public void initialize() {
+        isLives();
+        loadConfig();
+        txtLive.setText("" + lives);
+        imageFileMouse = new File("1175.gif");
+        mouseImage = new Image(imageFileMouse.toURI().toString());
+        imageFileCactus = new File("cactus30.png");
+        cactusImage = new Image(imageFileCactus.toURI().toString());
+        btnStart.setFocusTraversable(false);
+        btnPause.setFocusTraversable(false);
+        btnRestart.setFocusTraversable(false);
+        btnSettings.setFocusTraversable(false);
+        btnExit.setFocusTraversable(false);
         isAlive = true;
         gameOver = false;
         move = Move.RIGHT;
         speed = 0 + difficult;
         gc = map.getGraphicsContext2D();
         snake.clear();
+        cactusList.clear();
         init();
-//        fill();
         tick();
+    }
+
+    public void loadConfig() {
+        properties = new Properties();
+        FileInputStream fileInputStream;
+        FileOutputStream fileOutputStream;
+        try {
+            fileInputStream = new FileInputStream("src/main/resources/ru/suzume/snakefx/config.properties");
+            properties.load(fileInputStream);
+            if (Integer.parseInt(properties.getProperty("record")) < score) {
+                properties.setProperty("record", "" + score);
+            }
+            fileOutputStream = new FileOutputStream("src/main/resources/ru/suzume/snakefx/config.properties");
+            properties.store(fileOutputStream, null);
+            txtRecord.setText(properties.getProperty("record"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void init() {
@@ -90,6 +137,7 @@ public class MainWindowController implements EventHandler<KeyEvent> {
             SnakeNode snakeNode = new SnakeNode(width / 2, height / 2);
             snake.add(snakeNode);
         }
+        createCactus();
         createMouse();
         fill();
     }
@@ -100,11 +148,15 @@ public class MainWindowController implements EventHandler<KeyEvent> {
         gc.fillRect(0, 0, width * nodeSize, height * nodeSize);
 
         //fill mouse
-        gc.setFill(Color.DARKORANGE);
-        gc.fillRect(mouse.getPosX() * nodeSize, mouse.getPosY() * nodeSize, nodeSize - 1, nodeSize - 1);
-        gc.setFill(Color.ORANGE);
-        gc.fillRect(mouse.getPosX() * nodeSize, mouse.getPosY() * nodeSize, nodeSize - 2, nodeSize - 2);
+//        gc.setFill(Color.DARKORANGE);
+//        gc.fillRect(mouse.getPosX() * nodeSize, mouse.getPosY() * nodeSize, nodeSize - 1, nodeSize - 1);
+//        gc.setFill(Color.ORANGE);
+//        gc.fillRect(mouse.getPosX() * nodeSize, mouse.getPosY() * nodeSize, nodeSize - 2, nodeSize - 2);
 
+        gc.drawImage(mouseImage, mouse.getPosX() * nodeSize, mouse.getPosY() * nodeSize);
+        for (CactusNode cactus : cactusList) {
+            gc.drawImage(cactusImage, cactus.getPosX() * nodeSize, cactus.getPosY() * nodeSize);
+        }
     }
 
     void tick() {
@@ -113,6 +165,7 @@ public class MainWindowController implements EventHandler<KeyEvent> {
             move();
             snake();
             checkMouse();
+            checkCactus();
             checkIntersection();
             System.out.println(timeline.getRate());
         }));
@@ -123,13 +176,52 @@ public class MainWindowController implements EventHandler<KeyEvent> {
 
     void snake() {
         //рисует и закрашивает части змеи
-        for (SnakeNode snakeNode : snake) {
+//        for (SnakeNode snakeNode : snake) {
+//            gc.setFill(Color.BLACK);
+//            gc.fillRect(snakeNode.getPosX() * nodeSize, snakeNode.getPosY() * nodeSize, nodeSize - 2, nodeSize - 2);
+//            gc.setFill(snakeColor);
+//            gc.fillRect(snakeNode.getPosX() * nodeSize, snakeNode.getPosY() * nodeSize, nodeSize - 3, nodeSize - 3);
+//    }
+        for (int i = 0; i <= snake.size() - 1; i++) {
             gc.setFill(Color.BLACK);
-            gc.fillRect(snakeNode.getPosX() * nodeSize, snakeNode.getPosY() * nodeSize, nodeSize - 1, nodeSize - 1);
-            gc.setFill(snakeColor);
-            gc.fillRect(snakeNode.getPosX() * nodeSize, snakeNode.getPosY() * nodeSize, nodeSize - 2, nodeSize - 2);
+            if (i == 0) {
+                gc.fillRoundRect(snake.get(i).getPosX() * nodeSize, snake.get(i).getPosY() * nodeSize, nodeSize - 1, nodeSize - 1, 10, 10);
+                gc.setFill(snakeColor);
+                gc.fillRoundRect(snake.get(i).getPosX() * nodeSize, snake.get(i).getPosY() * nodeSize, nodeSize - 2, nodeSize - 2, 10, 10);
+            } else {
+                gc.fillRoundRect(snake.get(i).getPosX() * nodeSize, snake.get(i).getPosY() * nodeSize, nodeSize - 1, nodeSize - 1, 3, 3);
+                gc.setFill(snakeColor);
+                gc.fillRoundRect(snake.get(i).getPosX() * nodeSize, snake.get(i).getPosY() * nodeSize, nodeSize - 2, nodeSize - 2, 3, 3);
+            }
+        }
+//            System.out.println(snakeNode.getPosX() + " " + snakeNode.getPosY());
+    }
 
-            System.out.println(snakeNode.getPosX() + " " + snakeNode.getPosY());
+    private void createCactus() {
+        cactusX = new Random().nextInt(width);
+        cactusY = new Random().nextInt(height);
+        for (CactusNode c : cactusList) {
+            if (cactusX == c.getPosX() && cactusY == c.getPosY()) {
+                createCactus();
+            }
+        }
+        for (SnakeNode s : snake) {
+            if (cactusX == s.getPosX() && cactusY == s.getPosY()) {
+                createCactus();
+            }
+        }
+        if (cactusList.size() < 5) {
+            cactus = new CactusNode(cactusX, cactusY);
+            cactusList.add(cactus);
+        }
+    }
+
+    public void checkCactus() {
+        for (CactusNode cactus : cactusList) {
+            if (snake.get(0).getPosX() == cactus.getPosX() &&
+                    snake.get(0).getPosY() == cactus.getPosY()) {
+                gameOver();
+            }
         }
     }
 
@@ -148,11 +240,14 @@ public class MainWindowController implements EventHandler<KeyEvent> {
         if (snake.get(0).getPosX() == mouse.getPosX() &&
                 snake.get(0).getPosY() == mouse.getPosY()) {
             createMouse();
+            score += 100;
+            txtScore.setText("" + score);
             speed += 0.1;
             timeline.setRate(1 + speed);
             SnakeNode snakeNode = new SnakeNode(snake.get(snake.size() - 1).getPosX(),
                     snake.get(snake.size() - 1).getPosY());
             snake.add(snakeNode);
+            createCactus();
         }
     }
 
@@ -221,9 +316,24 @@ public class MainWindowController implements EventHandler<KeyEvent> {
         }
     }
 
+    private void isLives() {
+        if (lives >= 0) {
+            txtScore.setText("" + tempScore);
+        } else {
+            lives = 2;
+            score = 0;
+            txtScore.setText("" + score);
+        }
+    }
+
     private void gameOver() {
+        if (lives >= 0) {
+            tempScore = score;
+            lives = lives - 1;
+        }
         isAlive = false;
         timeline.stop();
+        loadConfig();
         FXMLLoader fxmlLoader = new FXMLLoader(MainWindowApplication.class.getResource("died-view.fxml"));
         Stage stage = new Stage();
         Scene scene = null;
@@ -263,5 +373,19 @@ public class MainWindowController implements EventHandler<KeyEvent> {
     public void exit() {
         Stage stage = (Stage) btnExit.getScene().getWindow();
         stage.close();
+    }
+
+    @FXML
+    public void start() {
+        if (isAlive) {
+            timeline.play();
+        }
+    }
+
+    @FXML
+    public void pause() {
+        if (isAlive) {
+            timeline.pause();
+        }
     }
 }

@@ -1,13 +1,10 @@
 package ru.suzume.snakefx.objects;
 
-import javafx.css.Style;
 import javafx.scene.layout.Pane;
 
-public class SnakeNode {
+public class SnakeNode extends Pane {
     private int posX;
     private int posY;
-    public static Style style;
-
 
     public SnakeNode(int posX, int posY) {
         this.posX = posX;
@@ -28,10 +25,6 @@ public class SnakeNode {
 
     public void setPosY(int posY) {
         this.posY = posY;
-    }
-
-    public void setStyle(Style style) {
-        this.style = style;
     }
 
     @Override
