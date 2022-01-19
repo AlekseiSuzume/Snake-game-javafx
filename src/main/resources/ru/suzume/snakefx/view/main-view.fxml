@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="470.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ru.suzume.snakefx.controller.MainWindowController">
+    <children>
+        <MenuBar fx:id="menuBar" nodeOrientation="RIGHT_TO_LEFT">
+            <menus>
+                <Menu fx:id="btnMenu" mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem fx:id="menuInfo" mnemonicParsing="false" onAction="#aboutViewOpen" text="About game"/>
+                        <MenuItem fx:id="menuAbout" mnemonicParsing="false" onAction="#authorViewOpen"
+                                  text="About author"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <AnchorPane maxHeight="470.0" maxWidth="700.0" minHeight="470.0" minWidth="700.0" prefHeight="470.0"
+                    prefWidth="700.0" VBox.vgrow="ALWAYS">
+            <children>
+                <Label layoutX="566.0" layoutY="14.0" prefHeight="19.0" prefWidth="54.0" text="Record:">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="txtRecord" alignment="CENTER" contentDisplay="CENTER" layoutX="561.0" layoutY="40.0"
+                       prefHeight="20.0" prefWidth="50.0" text="0">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="570.0" layoutY="74.0" text="Score:" textAlignment="CENTER">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="txtScore" alignment="CENTER" layoutX="562.0" layoutY="103.0" prefHeight="20.0"
+                       prefWidth="50.0" text="0" textAlignment="CENTER">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <Label layoutX="574.0" layoutY="137.0" text="Lives:" textAlignment="CENTER">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+                <Label fx:id="txtLive" alignment="CENTER" layoutX="570.0" layoutY="168.0" prefHeight="18.0"
+                       prefWidth="32.0" text="0" textAlignment="CENTER">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                </Label>
+                <Button fx:id="btnExit" layoutX="546.0" layoutY="400.0" mnemonicParsing="false" onAction="#exit"
+                        prefHeight="40.0" prefWidth="80.0" text="Exit game"
+                        AnchorPane.bottomAnchor="30.399999999999977"/>
+                <Button fx:id="btnSettings" layoutX="546.0" layoutY="331.0" mnemonicParsing="false" onAction="#settings"
+                        prefHeight="40.0" prefWidth="80.0" text="Settings" AnchorPane.bottomAnchor="99.39999999999998"/>
+                <Button fx:id="btnRestart" layoutX="559.0" layoutY="269.0" mnemonicParsing="false" onAction="#restart"
+                        text="Restart"/>
+                <Button fx:id="btnStart" layoutX="521.0" layoutY="222.0" mnemonicParsing="false" onAction="#start"
+                        prefHeight="25.0" prefWidth="50.0" text="Start"/>
+                <Button fx:id="btnPause" layoutX="601.0" layoutY="222.0" mnemonicParsing="false" onAction="#pause"
+                        prefHeight="25.0" prefWidth="50.0" text="Pause"/>
+                <Canvas fx:id="map" height="450.0" layoutX="14.0" layoutY="10.0" width="450.0"
+                        AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0"/>
+            </children>
+            <VBox.margin>
+                <Insets/>
+            </VBox.margin>
+        </AnchorPane>
+    </children>
+</VBox>
