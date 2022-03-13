@@ -3,10 +3,9 @@ package ru.suzume.snakefx.objects;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import ru.suzume.snakefx.controller.MainWindowController;
 
 import java.util.List;
-
-import static ru.suzume.snakefx.MainWindowApplication.mwc;
 
 public class SnakeNode extends Pane {
     private int posX;
@@ -33,8 +32,7 @@ public class SnakeNode extends Pane {
         this.posY = posY;
     }
 
-    public static void snake(GraphicsContext gc, List<SnakeNode> snakeList, int BLOCK_SIZE, Color snakeColor) {
-        //рисует и закрашивает части змеи
+    public static void snakeFill(GraphicsContext gc, List<SnakeNode> snakeList, int BLOCK_SIZE, Color snakeColor) {
         for (int i = 0; i <= snakeList.size() - 1; i++) {
             gc.setFill(Color.BLACK);
             if (i == 0) {
@@ -49,43 +47,39 @@ public class SnakeNode extends Pane {
         }
     }
 
-    public static void move(List<SnakeNode> snakeList, Move move, int height, int width) {
-        if (mwc.isGameOver()) {
-            mwc.gameOver();
-            return;
-        }
+    public static void move(List<SnakeNode> snakeList, Dicrection dicrection) {
         for (int i = snakeList.size() - 1; i > 0; i--) {
             snakeList.get(i).setPosX(snakeList.get(i - 1).getPosX());
             snakeList.get(i).setPosY(snakeList.get(i - 1).getPosY());
         }
-        if (move == Move.UP) {
-            snakeList.get(0).setPosY(snakeList.get(0).getPosY() - 1);
-            if (snakeList.get(0).getPosY() < 0) {
-                mwc.setGameOver(true);
-            }
-        }
-        if (move == Move.DOWN) {
-            snakeList.get(0).setPosY(snakeList.get(0).getPosY() + 1);
-            if (snakeList.get(0).getPosY() == height) {
-                mwc.setGameOver(true);
-            }
-        }
-        if (move == Move.LEFT) {
-            snakeList.get(0).setPosX(snakeList.get(0).getPosX() - 1);
-            if (snakeList.get(0).getPosX() < 0) {
-                System.out.println(snakeList.get(0).getPosX());
-                mwc.setGameOver(true);
-            }
-        }
-        if (move == Move.RIGHT) {
-            snakeList.get(0).setPosX(snakeList.get(0).getPosX() + 1);
-            if (snakeList.get(0).getPosX() == width) {
-                mwc.setGameOver(true);
-            }
+        switch (dicrection) {
+            case UP -> snakeList.get(0).setPosY(snakeList.get(0).getPosY() - 1);
+            case DOWN -> snakeList.get(0).setPosY(snakeList.get(0).getPosY() + 1);
+            case LEFT -> snakeList.get(0).setPosX(snakeList.get(0).getPosX() - 1);
+            case RIGHT -> snakeList.get(0).setPosX(snakeList.get(0).getPosX() + 1);
         }
     }
 
-    public static void checkIntersection(List<SnakeNode> snakeList) {
+    public static void wallCollision(MainWindowController mwc, List<SnakeNode> snakeList, int height, int width) {
+
+        if (snakeList.get(0).getPosY() < 0) {
+            mwc.gameOver();
+        }
+
+        if (snakeList.get(0).getPosY() == height) {
+            mwc.gameOver();
+        }
+
+        if (snakeList.get(0).getPosX() < 0) {
+            mwc.gameOver();
+        }
+
+        if (snakeList.get(0).getPosX() == width) {
+            mwc.gameOver();
+        }
+    }
+
+    public static void checkIntersection(MainWindowController mwc, List<SnakeNode> snakeList) {
         for (int i = 1; i < snakeList.size(); i++) {
             if (snakeList.get(0).getPosX() == snakeList.get(i).getPosX()
                     && snakeList.get(0).getPosY() == snakeList.get(i).getPosY()) {

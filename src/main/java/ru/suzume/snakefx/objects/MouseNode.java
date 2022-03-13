@@ -1,20 +1,17 @@
 package ru.suzume.snakefx.objects;
-
 import javafx.animation.Timeline;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import ru.suzume.snakefx.controller.MainWindowController;
 
 import java.util.List;
 import java.util.Random;
 
-import static ru.suzume.snakefx.MainWindowApplication.mwc;
-
 public class MouseNode extends Pane {
     private static int posX;
     private static int posY;
-    private static final Image mouseImage = new Image(String.valueOf(MouseNode.class.getClassLoader().getResource("1175.gif")));
-
+    private static final Image mouseImage = new Image(String.valueOf(MouseNode.class.getResource("/ru/suzume/snakefx/images/1175.gif")));
     public MouseNode(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
@@ -32,26 +29,26 @@ public class MouseNode extends Pane {
         return mouseImage;
     }
 
-    public static void createMouse(List<SnakeNode> snakeList, List<CactusNode> cactusList) {
-        posX = new Random().nextInt(mwc.getWidth());
-        posY = new Random().nextInt(mwc.getHeight());
+    public static void createMouse(MainWindowController mwc, List<SnakeNode> snakeList, List<CactusNode> cactusList) {
+        posX = new Random().nextInt(15);
+        posY = new Random().nextInt(15);
         for (CactusNode c : cactusList) {
             if (posX == c.getPosX() && posY == c.getPosY()) {
-                createMouse(snakeList, cactusList);
+                createMouse(mwc, snakeList, cactusList);
             }
         }
         for (SnakeNode s : snakeList) {
             if (posX == s.getPosX() && posY == s.getPosY()) {
-                createMouse(snakeList, cactusList);
+                createMouse(mwc, snakeList, cactusList);
             }
         }
         mwc.setMouse(new MouseNode(posX, posY));
     }
 
-    public static void checkMouse(List<SnakeNode> snakeList, List<CactusNode> cactusList, MouseNode mouse, Label textScore, Timeline timeline) {
+    public static void checkMouse(MainWindowController mwc,List<SnakeNode> snakeList, List<CactusNode> cactusList, MouseNode mouse, Label textScore, Timeline timeline) {
         if (snakeList.get(0).getPosX() == mouse.getPosX() &&
                 snakeList.get(0).getPosY() == mouse.getPosY()) {
-            createMouse(snakeList, cactusList);
+            createMouse(mwc, snakeList, cactusList);
             mwc.setScore(100);
             textScore.setText("" + mwc.getScore());
             mwc.setSpeed(0.1);

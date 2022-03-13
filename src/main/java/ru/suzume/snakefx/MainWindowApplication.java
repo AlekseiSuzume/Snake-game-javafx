@@ -12,7 +12,6 @@ import java.io.IOException;
 
 public class MainWindowApplication extends Application {
 
-//    public static MainWindowController mwc = new MainWindowController();
    public static MainWindowController mwc;
 
     @Override

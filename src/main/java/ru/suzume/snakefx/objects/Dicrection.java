@@ -1,6 +1,6 @@
 package ru.suzume.snakefx.objects;
 
-public enum Move {
+public enum Dicrection {
     UP,
     DOWN,
     LEFT,
